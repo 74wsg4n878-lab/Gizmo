@@ -1,0 +1,24 @@
+name: 'gamemaleAutoLogin'
+
+on:
+  push:
+    branches: [ main ] # 当对分支main进行push操作的时候，这个工作流就被触发了
+  schedule:
+    - cron: '0  4,16  *  *  *' # 定时任务，UTC 16:00 ，即北京时间 00:00 运行
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Set up Python # 安装python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.10.16
+    - name: Install pkt # 安装requests, ddddocr
+      run: pip install requests ddddocr
+    - name: Login  # 读取账号并登录
+      env: 
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+      run: python gamemale.py
